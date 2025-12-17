@@ -44,12 +44,12 @@
         </table>
         <h3>Imported Users</h3>
         <table id="importedTable" class="hidden">
-            <thead><tr><th>Email</th><th>Name</th><th>Surname</th></tr></thead>
+            <thead><tr><th>Email</th><th>Name</th><th>Surname</th><th>Created</th></tr></thead>
             <tbody></tbody>
         </table>
         <h3>Existing Users</h3>
         <table id="existingTable" class="hidden">
-            <thead><tr><th>Email</th><th>Name</th><th>Surname</th></tr></thead>
+            <thead><tr><th>Email</th><th>Name</th><th>Surname</th><th>Created</th></tr></thead>
             <tbody></tbody>
         </table>
     </div>
@@ -166,7 +166,8 @@
             if (item.rowNumber) {
                 tr.innerHTML = `<td>${item.rowNumber}</td><td>${item.message}</td>`;
             } else {
-                tr.innerHTML = `<td>${item.email}</td><td>${item.name}</td><td>${item.surname}</td>`;
+                const createdDate = item.createdDate ?? '';
+                tr.innerHTML = `<td>${item.email}</td><td>${item.name}</td><td>${item.surname}</td><td>${createdDate}</td>`;
             }
             tbody.appendChild(tr);
         });

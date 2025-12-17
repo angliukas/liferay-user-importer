@@ -69,12 +69,11 @@ public class ImportService {
                 continue;
             }
 
-            boolean exists = userRepository
-                    .findByCompanyIdAndEmailAddressIgnoreCase(properties.getCompanyId(), record.getEmail())
-                    .map(LiferayUser::getUserId)
-                    .isPresent();
+            var existingUser = userRepository
+                    .findByCompanyIdAndEmailAddressIgnoreCase(properties.getCompanyId(), record.getEmail());
 
-            if (exists) {
+            if (existingUser.isPresent()) {
+                record.setCreatedDate(existingUser.get().getCreateDate());
                 result.getExistingUsers().add(record);
                 result.setExistingCount(result.getExistingCount() + 1);
                 continue;
@@ -83,6 +82,10 @@ public class ImportService {
             try {
                 boolean created = liferayClient.createUser(record, organizationId);
                 if (created) {
+                    userRepository
+                            .findByCompanyIdAndEmailAddressIgnoreCase(properties.getCompanyId(), record.getEmail())
+                            .map(LiferayUser::getCreateDate)
+                            .ifPresent(record::setCreatedDate);
                     result.getImportedUsers().add(record);
                     result.setImportedCount(result.getImportedCount() + 1);
                 } else {
