@@ -233,15 +233,30 @@
     let organizations = [];
 
     function renderOrganizations(filter = '') {
+        const previousValue = organizationSelect.value;
         organizationSelect.innerHTML = '';
-        organizations
-            .filter(org => org.name.toLowerCase().includes(filter.toLowerCase()))
-            .forEach(org => {
-                const option = document.createElement('option');
-                option.value = org.organizationId;
-                option.textContent = `${org.name} (${org.organizationId})`;
-                organizationSelect.appendChild(option);
-            });
+
+        const emptyOption = document.createElement('option');
+        emptyOption.value = '';
+        emptyOption.textContent = '';
+        organizationSelect.appendChild(emptyOption);
+
+        const filteredOrganizations = organizations.filter(org =>
+            org.name.toLowerCase().includes(filter.toLowerCase())
+        );
+
+        filteredOrganizations.forEach(org => {
+            const option = document.createElement('option');
+            option.value = org.organizationId;
+            option.textContent = `${org.name} (${org.organizationId})`;
+            organizationSelect.appendChild(option);
+        });
+
+        const selectedStillExists = filteredOrganizations.some(
+            org => String(org.organizationId) === previousValue
+        );
+
+        organizationSelect.value = selectedStillExists ? previousValue : '';
     }
 
     function loadOrganizations() {
