@@ -4,34 +4,207 @@
     <meta charset="UTF-8">
     <title>Liferay User Importer</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .container { max-width: 900px; margin: 0 auto; }
-        .card { border: 1px solid #ccc; padding: 16px; border-radius: 4px; margin-bottom: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border: 1px solid #ddd; padding: 8px; }
-        th { background: #f5f5f5; }
-        .status { margin-top: 10px; }
+        :root {
+            --primary: #0b74de;
+            --primary-dark: #095fb8;
+            --surface: #ffffff;
+            --border: #e5e7eb;
+            --muted: #6b7280;
+            --success: #0f9d58;
+            --error: #d1434b;
+            --background: linear-gradient(120deg, #f5f7fb 0%, #eef2f7 100%);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            background: var(--background);
+            color: #111827;
+        }
+
+        .page {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 32px 20px 48px;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 26px;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            margin: 4px 0 0;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 18px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.07);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            margin-bottom: 8px;
+            font-size: 18px;
+            letter-spacing: -0.25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-grid {
+            display: grid;
+            gap: 16px;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            margin-top: 12px;
+        }
+
+        input[type="text"],
+        select,
+        input[type="file"] {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: #f8fafc;
+            font-size: 14px;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        input[type="text"]:focus,
+        select:focus,
+        input[type="file"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(11, 116, 222, 0.15);
+        }
+
+        button {
+            margin-top: 6px;
+            padding: 12px 18px;
+            background: var(--primary);
+            color: white;
+            font-weight: 700;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.1s ease, box-shadow 0.2s ease, background 0.15s ease;
+            box-shadow: 0 10px 20px rgba(11, 116, 222, 0.25);
+        }
+
+        button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 12px 22px rgba(11, 116, 222, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 8px 16px rgba(11, 116, 222, 0.24);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            border: 1px solid var(--border);
+            padding: 10px 12px;
+            font-size: 14px;
+            text-align: left;
+        }
+
+        th {
+            background: #eef2f7;
+            font-weight: 700;
+        }
+
+        tbody tr:nth-child(odd) {
+            background: #fbfdff;
+        }
+
+        .status {
+            margin-top: 12px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            background: #f1f5f9;
+            color: var(--muted);
+            font-weight: 600;
+            border: 1px solid var(--border);
+        }
+
         .hidden { display: none; }
-        .error { color: #b00020; }
-        .success { color: #006400; }
-        input[type="text"] { width: 100%; padding: 6px; }
+        .error { background: #fff2f3; color: var(--error); border-color: #f7c9cd; }
+        .success { background: #ecf9f2; color: var(--success); border-color: #bce5cd; }
+
+        .section-title {
+            margin-bottom: 4px;
+            color: var(--muted);
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
     </style>
 </head>
 <body>
-<div class="container">
-    <h1>Liferay User Importer</h1>
+<div class="page">
+    <header>
+        <div>
+            <h1>Liferay User Importer</h1>
+            <p class="subtitle">Upload a spreadsheet and keep organizations in sync effortlessly.</p>
+        </div>
+    </header>
+
     <div class="card">
-        <label for="search">Search organizations</label>
-        <input type="text" id="search" placeholder="Start typing to filter organizations">
-        <label for="organization">Organization</label>
-        <select id="organization"></select>
-        <label for="file">Excel (.xlsx) file</label>
-        <input type="file" id="file" accept=".xlsx">
+        <div class="section-title">Upload details</div>
+        <div class="form-grid">
+            <div>
+                <label for="search">Search organizations</label>
+                <input type="text" id="search" placeholder="Start typing to filter organizations">
+            </div>
+            <div>
+                <label for="organization">Organization</label>
+                <select id="organization"></select>
+            </div>
+            <div>
+                <label for="file">Excel (.xlsx) file</label>
+                <input type="file" id="file" accept=".xlsx">
+            </div>
+        </div>
         <button id="upload">Upload and Import</button>
         <div id="status" class="status"></div>
     </div>
 
     <div class="card">
+        <div class="section-title">Import results</div>
         <h3>Validation Errors</h3>
         <table id="validationTable" class="hidden">
             <thead><tr><th>Row</th><th>Message</th><th>Email</th><th>Name</th><th>Surname</th></tr></thead>
