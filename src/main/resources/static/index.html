@@ -33,7 +33,10 @@
 
     <div class="card">
         <h3>Validation Errors</h3>
-        <ul id="validationErrors"></ul>
+        <table id="validationTable" class="hidden">
+            <thead><tr><th>Row</th><th>Message</th><th>Email</th><th>Name</th><th>Surname</th></tr></thead>
+            <tbody></tbody>
+        </table>
         <h3>Row Failures</h3>
         <table id="failuresTable" class="hidden">
             <thead><tr><th>Row</th><th>Message</th></tr></thead>
@@ -125,24 +128,28 @@
         status.textContent = `Processed ${result.totalRows} rows. Imported: ${result.importedCount}, Existing: ${result.existingCount}, Failed: ${result.failedCount}`;
         status.className = 'status success';
 
-        renderList(result.validationErrors, document.getElementById('validationErrors'));
+        renderValidationErrors(result.validationErrors, document.getElementById('validationTable'));
         renderTable(result.rowFailures, document.getElementById('failuresTable'));
         renderTable(result.importedUsers, document.getElementById('importedTable'));
         renderTable(result.existingUsers, document.getElementById('existingTable'));
     }
 
-    function renderList(items, container) {
-        container.innerHTML = '';
+    function renderValidationErrors(items, table) {
+        const tbody = table.querySelector('tbody');
+        tbody.innerHTML = '';
         if (!items || !items.length) {
-            const li = document.createElement('li');
-            li.textContent = 'None';
-            container.appendChild(li);
+            table.classList.add('hidden');
             return;
         }
+        table.classList.remove('hidden');
         items.forEach(item => {
-            const li = document.createElement('li');
-            li.textContent = item;
-            container.appendChild(li);
+            const tr = document.createElement('tr');
+            const rowNumber = item.rowNumber ?? '';
+            const email = item.email || '';
+            const name = item.name || '';
+            const surname = item.surname || '';
+            tr.innerHTML = `<td>${rowNumber}</td><td>${item.message}</td><td>${email}</td><td>${name}</td><td>${surname}</td>`;
+            tbody.appendChild(tr);
         });
     }
 

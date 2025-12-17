@@ -19,6 +19,7 @@ import com.example.liferayimporter.domain.LiferayUser;
 import com.example.liferayimporter.dto.ImportResult;
 import com.example.liferayimporter.dto.RowFailure;
 import com.example.liferayimporter.dto.UserRecord;
+import com.example.liferayimporter.dto.ValidationError;
 import com.example.liferayimporter.repository.LiferayRoleRepository;
 import com.example.liferayimporter.repository.LiferayUserRepository;
 
@@ -46,7 +47,7 @@ public class ImportService {
         result.setTotalRows(records.size());
 
         if (organizationId == null || organizationId == 0) {
-            result.getValidationErrors().add("organizationId is required");
+            result.getValidationErrors().add(new ValidationError(null, "organizationId is required", null));
             result.setFailedCount(records.size());
             return result;
         }
@@ -54,7 +55,7 @@ public class ImportService {
         if (!rolesExist()) {
             result.setRolesMissing(true);
             result.setFailureReason("Missing roles");
-            result.getValidationErrors().add("One or more default roles are missing in Liferay");
+            result.getValidationErrors().add(new ValidationError(null, "One or more default roles are missing in Liferay", null));
             result.setFailedCount(records.size());
             return result;
         }
@@ -63,7 +64,7 @@ public class ImportService {
             UserRecord record = records.get(i);
             int rowNumber = i + 1;
             if (!isEmailValid(record.getEmail())) {
-                result.getValidationErrors().add("Row " + rowNumber + ": invalid email");
+                result.getValidationErrors().add(new ValidationError(rowNumber, "Invalid email", record));
                 result.setFailedCount(result.getFailedCount() + 1);
                 continue;
             }
