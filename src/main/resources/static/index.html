@@ -161,6 +161,55 @@
             border: 1px solid var(--border);
         }
 
+        .search-results {
+            position: relative;
+        }
+
+        .search-results:not(.hidden) {
+            margin-top: 6px;
+        }
+
+        .search-results__list {
+            position: absolute;
+            top: calc(100% + 2px);
+            left: 0;
+            z-index: 10;
+            width: 100%;
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(15, 23, 42, 0.12);
+            max-height: 220px;
+            overflow-y: auto;
+            padding: 6px 0;
+            list-style: none;
+            margin: 0;
+        }
+
+        .search-results__item {
+            padding: 10px 12px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .search-results__id {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .search-results__item:hover,
+        .search-results__item:focus {
+            background: #f3f6fb;
+        }
+
+        .search-results__empty {
+            padding: 10px 12px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
         .hidden { display: none; }
         .error { background: #fff2f3; color: var(--error); border-color: #f7c9cd; }
         .success { background: #ecf9f2; color: var(--success); border-color: #bce5cd; }
@@ -188,7 +237,8 @@
         <div class="form-grid">
             <div>
                 <label for="search">Search organizations</label>
-                <input type="text" id="search" placeholder="Start typing to filter organizations">
+                <input type="text" id="search" placeholder="Start typing to filter organizations" autocomplete="off">
+                <div id="searchResults" class="search-results hidden"></div>
             </div>
             <div>
                 <label for="organization">Organization</label>
@@ -230,6 +280,7 @@
 <script>
     const organizationSelect = document.getElementById('organization');
     const searchInput = document.getElementById('search');
+    const searchResults = document.getElementById('searchResults');
     let organizations = [];
 
     function renderOrganizations(filter = '') {
@@ -259,12 +310,67 @@
         organizationSelect.value = selectedStillExists ? previousValue : '';
     }
 
+    function renderSearchResults(filter = '') {
+        searchResults.innerHTML = '';
+
+        const trimmedFilter = filter.trim().toLowerCase();
+        if (!trimmedFilter) {
+            searchResults.classList.add('hidden');
+            return;
+        }
+
+        const filteredOrganizations = organizations.filter(org =>
+            org.name.toLowerCase().includes(trimmedFilter)
+        );
+
+        const list = document.createElement('ul');
+        list.className = 'search-results__list';
+
+        if (!filteredOrganizations.length) {
+            const empty = document.createElement('li');
+            empty.className = 'search-results__empty';
+            empty.textContent = 'No matching organizations found';
+            list.appendChild(empty);
+        } else {
+            filteredOrganizations.forEach(org => {
+                const item = document.createElement('li');
+                item.className = 'search-results__item';
+                item.tabIndex = 0;
+                item.innerHTML = `<span>${org.name}</span><span class="search-results__id">${org.organizationId}</span>`;
+
+                const selectOrganization = () => {
+                    searchInput.value = org.name;
+                    renderOrganizations(org.name);
+                    organizationSelect.value = String(org.organizationId);
+                    searchResults.classList.add('hidden');
+                };
+
+                item.addEventListener('click', selectOrganization);
+                item.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        selectOrganization();
+                    }
+                });
+
+                list.appendChild(item);
+            });
+        }
+
+        searchResults.appendChild(list);
+        searchResults.classList.remove('hidden');
+    }
+
     function loadOrganizations() {
         fetch('/api/users/organizations')
             .then(r => r.json())
             .then(data => {
                 organizations = data;
-                renderOrganizations();
+                const currentFilter = searchInput.value;
+                renderOrganizations(currentFilter);
+                if (currentFilter) {
+                    renderSearchResults(currentFilter);
+                }
             })
             .catch(() => {
                 document.getElementById('status').textContent = 'Failed to load organizations';
@@ -272,7 +378,21 @@
             });
     }
 
-    searchInput.addEventListener('input', () => renderOrganizations(searchInput.value));
+    searchInput.addEventListener('input', () => {
+        const value = searchInput.value;
+        renderOrganizations(value);
+        renderSearchResults(value);
+    });
+
+    searchInput.addEventListener('focus', () => {
+        if (searchInput.value) {
+            renderSearchResults(searchInput.value);
+        }
+    });
+
+    searchInput.addEventListener('blur', () => {
+        setTimeout(() => searchResults.classList.add('hidden'), 150);
+    });
 
     document.getElementById('upload').addEventListener('click', () => {
         const fileInput = document.getElementById('file');
