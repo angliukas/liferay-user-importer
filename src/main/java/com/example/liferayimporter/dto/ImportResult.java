@@ -10,7 +10,7 @@ public class ImportResult {
     private int failedCount;
     private boolean rolesMissing;
     private String failureReason;
-    private List<String> validationErrors = new ArrayList<>();
+    private List<ValidationError> validationErrors = new ArrayList<>();
     private List<RowFailure> rowFailures = new ArrayList<>();
     private List<UserRecord> importedUsers = new ArrayList<>();
     private List<UserRecord> existingUsers = new ArrayList<>();
@@ -63,11 +63,11 @@ public class ImportResult {
         this.failureReason = failureReason;
     }
 
-    public List<String> getValidationErrors() {
+    public List<ValidationError> getValidationErrors() {
         return validationErrors;
     }
 
-    public void setValidationErrors(List<String> validationErrors) {
+    public void setValidationErrors(List<ValidationError> validationErrors) {
         this.validationErrors = validationErrors;
     }
 
