@@ -6,6 +6,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.Table;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "User_")
 @IdClass(LiferayUserId.class)
@@ -21,6 +23,9 @@ public class LiferayUser {
 
     @Column(name = "emailAddress")
     private String emailAddress;
+
+    @Column(name = "createDate")
+    private LocalDateTime createDate;
 
     public Long getCompanyId() {
         return companyId;
@@ -44,5 +49,13 @@ public class LiferayUser {
 
     public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
+    }
+
+    public LocalDateTime getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(LocalDateTime createDate) {
+        this.createDate = createDate;
     }
 }

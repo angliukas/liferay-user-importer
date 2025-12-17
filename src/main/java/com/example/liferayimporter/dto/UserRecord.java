@@ -1,9 +1,12 @@
 package com.example.liferayimporter.dto;
 
+import java.time.LocalDateTime;
+
 public class UserRecord {
     private String email;
     private String name;
     private String surname;
+    private LocalDateTime createdDate;
 
     public UserRecord() {
     }
@@ -12,6 +15,13 @@ public class UserRecord {
         this.email = email;
         this.name = name;
         this.surname = surname;
+    }
+
+    public UserRecord(String email, String name, String surname, LocalDateTime createdDate) {
+        this.email = email;
+        this.name = name;
+        this.surname = surname;
+        this.createdDate = createdDate;
     }
 
     public String getEmail() {
@@ -36,5 +46,13 @@ public class UserRecord {
 
     public void setSurname(String surname) {
         this.surname = surname;
+    }
+
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
     }
 }
