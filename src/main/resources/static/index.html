@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fi">
 <head>
     <meta charset="UTF-8">
-    <title>Liferay User Importer</title>
+    <title>Liferay-käyttäjien tuonti</title>
     <style>
         :root {
             --primary: #0b74de;
@@ -227,57 +227,182 @@
 <div class="page">
     <header>
         <div>
-            <h1>Liferay User Importer</h1>
-            <p class="subtitle">Upload a spreadsheet and keep organizations in sync effortlessly.</p>
+            <h1 data-i18n="title">Liferay-käyttäjien tuonti</h1>
+            <p class="subtitle" data-i18n="subtitle">Lataa taulukko ja synkronoi organisaatiot vaivattomasti.</p>
+        </div>
+        <div>
+            <label for="language" data-i18n="languageLabel">Kieli</label>
+            <select id="language">
+                <option value="fi">Suomi</option>
+                <option value="en">English</option>
+            </select>
         </div>
     </header>
 
     <div class="card">
-        <div class="section-title">Upload details</div>
+        <div class="section-title" data-i18n="uploadDetailsTitle">Tuontiasetukset</div>
         <div class="form-grid">
             <div>
-                <label for="search">Search organizations</label>
-                <input type="text" id="search" placeholder="Start typing to filter organizations" autocomplete="off">
+                <label for="search" data-i18n="searchLabel">Etsi organisaatioita</label>
+                <input type="text" id="search" placeholder="Aloita kirjoittaminen suodattaaksesi organisaatioita" autocomplete="off">
                 <div id="searchResults" class="search-results hidden"></div>
             </div>
             <div>
-                <label for="organization">Organization</label>
+                <label for="organization" data-i18n="organizationLabel">Organisaatio</label>
                 <select id="organization"></select>
             </div>
             <div>
-                <label for="file">Excel (.xlsx) file</label>
+                <label for="file" data-i18n="fileLabel">Excel (.xlsx) -tiedosto</label>
                 <input type="file" id="file" accept=".xlsx">
             </div>
         </div>
-        <button id="upload">Upload and Import</button>
+        <button id="upload" data-i18n="uploadButton">Lataa ja tuo</button>
         <div id="status" class="status"></div>
     </div>
 
     <div class="card">
-        <div class="section-title">Import results</div>
-        <h3>Validation Errors</h3>
+        <div class="section-title" data-i18n="importResultsTitle">Tuontitulokset</div>
+        <h3 data-i18n="validationErrorsTitle">Validaatiovirheet</h3>
         <table id="validationTable" class="hidden">
-            <thead><tr><th>Row</th><th>Message</th><th>Email</th><th>Name</th><th>Surname</th></tr></thead>
+            <thead><tr>
+                <th data-i18n="tableRow">Rivi</th>
+                <th data-i18n="tableMessage">Viesti</th>
+                <th data-i18n="tableEmail">Sähköposti</th>
+                <th data-i18n="tableName">Etunimi</th>
+                <th data-i18n="tableSurname">Sukunimi</th>
+            </tr></thead>
             <tbody></tbody>
         </table>
-        <h3>Row Failures</h3>
+        <h3 data-i18n="rowFailuresTitle">Rivien epäonnistumiset</h3>
         <table id="failuresTable" class="hidden">
-            <thead><tr><th>Row</th><th>Message</th></tr></thead>
+            <thead><tr>
+                <th data-i18n="tableRow">Rivi</th>
+                <th data-i18n="tableMessage">Viesti</th>
+            </tr></thead>
             <tbody></tbody>
         </table>
-        <h3>Imported Users</h3>
+        <h3 data-i18n="importedUsersTitle">Tuodut käyttäjät</h3>
         <table id="importedTable" class="hidden">
-            <thead><tr><th>Email</th><th>Name</th><th>Surname</th><th>Created</th></tr></thead>
+            <thead><tr>
+                <th data-i18n="tableEmail">Sähköposti</th>
+                <th data-i18n="tableName">Etunimi</th>
+                <th data-i18n="tableSurname">Sukunimi</th>
+                <th data-i18n="tableCreated">Luotu</th>
+            </tr></thead>
             <tbody></tbody>
         </table>
-        <h3>Existing Users</h3>
+        <h3 data-i18n="existingUsersTitle">Olemassa olevat käyttäjät</h3>
         <table id="existingTable" class="hidden">
-            <thead><tr><th>Email</th><th>Name</th><th>Surname</th><th>Created</th></tr></thead>
+            <thead><tr>
+                <th data-i18n="tableEmail">Sähköposti</th>
+                <th data-i18n="tableName">Etunimi</th>
+                <th data-i18n="tableSurname">Sukunimi</th>
+                <th data-i18n="tableCreated">Luotu</th>
+            </tr></thead>
             <tbody></tbody>
         </table>
     </div>
 </div>
 <script>
+    const translations = {
+        fi: {
+            appTitle: 'Liferay-käyttäjien tuonti',
+            subtitle: 'Lataa taulukko ja synkronoi organisaatiot vaivattomasti.',
+            languageLabel: 'Kieli',
+            uploadDetailsTitle: 'Tuontiasetukset',
+            searchLabel: 'Etsi organisaatioita',
+            searchPlaceholder: 'Aloita kirjoittaminen suodattaaksesi organisaatioita',
+            organizationLabel: 'Organisaatio',
+            fileLabel: 'Excel (.xlsx) -tiedosto',
+            uploadButton: 'Lataa ja tuo',
+            importResultsTitle: 'Tuontitulokset',
+            validationErrorsTitle: 'Validaatiovirheet',
+            rowFailuresTitle: 'Rivien epäonnistumiset',
+            importedUsersTitle: 'Tuodut käyttäjät',
+            existingUsersTitle: 'Olemassa olevat käyttäjät',
+            tableRow: 'Rivi',
+            tableMessage: 'Viesti',
+            tableEmail: 'Sähköposti',
+            tableName: 'Etunimi',
+            tableSurname: 'Sukunimi',
+            tableCreated: 'Luotu',
+            searchNoMatches: 'Ei sopivia organisaatioita',
+            statusLoadOrgsFail: 'Organisaatioiden lataus epäonnistui',
+            statusChooseOrg: 'Valitse ensin organisaatio',
+            statusChooseFile: 'Valitse ladattava tiedosto',
+            statusImporting: 'Tuodaan...',
+            statusImportFailed: 'Tuonti epäonnistui',
+            statusProcessed: (result) => `Käsitelty ${result.totalRows} riviä. Tuotu: ${result.importedCount}, Olemassa: ${result.existingCount}, Epäonnistunut: ${result.failedCount}`,
+            languageOptionFi: 'Suomi',
+            languageOptionEn: 'English'
+        },
+        en: {
+            appTitle: 'Liferay User Importer',
+            subtitle: 'Upload a spreadsheet and keep organizations in sync effortlessly.',
+            languageLabel: 'Language',
+            uploadDetailsTitle: 'Upload details',
+            searchLabel: 'Search organizations',
+            searchPlaceholder: 'Start typing to filter organizations',
+            organizationLabel: 'Organization',
+            fileLabel: 'Excel (.xlsx) file',
+            uploadButton: 'Upload and Import',
+            importResultsTitle: 'Import results',
+            validationErrorsTitle: 'Validation Errors',
+            rowFailuresTitle: 'Row Failures',
+            importedUsersTitle: 'Imported Users',
+            existingUsersTitle: 'Existing Users',
+            tableRow: 'Row',
+            tableMessage: 'Message',
+            tableEmail: 'Email',
+            tableName: 'Name',
+            tableSurname: 'Surname',
+            tableCreated: 'Created',
+            searchNoMatches: 'No matching organizations found',
+            statusLoadOrgsFail: 'Failed to load organizations',
+            statusChooseOrg: 'Please choose an organization first',
+            statusChooseFile: 'Please choose a file to upload',
+            statusImporting: 'Importing...',
+            statusImportFailed: 'Import failed',
+            statusProcessed: (result) => `Processed ${result.totalRows} rows. Imported: ${result.importedCount}, Existing: ${result.existingCount}, Failed: ${result.failedCount}`,
+            languageOptionFi: 'Finnish',
+            languageOptionEn: 'English'
+        }
+    };
+
+    let currentLanguage = localStorage.getItem('language') || 'fi';
+
+    function setLanguage(lang) {
+        currentLanguage = translations[lang] ? lang : 'fi';
+        localStorage.setItem('language', currentLanguage);
+        applyTranslations();
+    }
+
+    function applyTranslations() {
+        const textKeys = [
+            'title', 'subtitle', 'languageLabel', 'uploadDetailsTitle', 'searchLabel',
+            'organizationLabel', 'fileLabel', 'uploadButton', 'importResultsTitle',
+            'validationErrorsTitle', 'rowFailuresTitle', 'importedUsersTitle', 'existingUsersTitle',
+            'tableRow', 'tableMessage', 'tableEmail', 'tableName', 'tableSurname', 'tableCreated'
+        ];
+
+        document.documentElement.lang = currentLanguage;
+        document.title = translations[currentLanguage].appTitle;
+
+        textKeys.forEach(key => {
+            document.querySelectorAll(`[data-i18n="${key}"]`).forEach(el => {
+                el.textContent = translations[currentLanguage][key];
+            });
+        });
+
+        const searchInput = document.getElementById('search');
+        searchInput.placeholder = translations[currentLanguage].searchPlaceholder;
+
+        const languageSelect = document.getElementById('language');
+        languageSelect.querySelector('option[value="fi"]').textContent = translations[currentLanguage].languageOptionFi;
+        languageSelect.querySelector('option[value="en"]').textContent = translations[currentLanguage].languageOptionEn;
+        languageSelect.value = currentLanguage;
+    }
+
     const organizationSelect = document.getElementById('organization');
     const searchInput = document.getElementById('search');
     const searchResults = document.getElementById('searchResults');
@@ -329,7 +454,7 @@
         if (!filteredOrganizations.length) {
             const empty = document.createElement('li');
             empty.className = 'search-results__empty';
-            empty.textContent = 'No matching organizations found';
+            empty.textContent = translations[currentLanguage].searchNoMatches;
             list.appendChild(empty);
         } else {
             filteredOrganizations.forEach(org => {
@@ -373,7 +498,7 @@
                 }
             })
             .catch(() => {
-                document.getElementById('status').textContent = 'Failed to load organizations';
+                document.getElementById('status').textContent = translations[currentLanguage].statusLoadOrgsFail;
                 document.getElementById('status').className = 'status error';
             });
     }
@@ -403,12 +528,12 @@
         status.className = 'status';
 
         if (!organizationId) {
-            status.textContent = 'Please choose an organization first';
+            status.textContent = translations[currentLanguage].statusChooseOrg;
             status.classList.add('error');
             return;
         }
         if (!fileInput.files.length) {
-            status.textContent = 'Please choose a file to upload';
+            status.textContent = translations[currentLanguage].statusChooseFile;
             status.classList.add('error');
             return;
         }
@@ -417,7 +542,7 @@
         formData.append('file', fileInput.files[0]);
         formData.append('organizationId', organizationId);
 
-        status.textContent = 'Importing...';
+        status.textContent = translations[currentLanguage].statusImporting;
         status.className = 'status';
 
         fetch('/api/users/import', {
@@ -427,14 +552,14 @@
             .then(r => r.json())
             .then(showResult)
             .catch(() => {
-                status.textContent = 'Import failed';
+                status.textContent = translations[currentLanguage].statusImportFailed;
                 status.className = 'status error';
             });
     });
 
     function showResult(result) {
         const status = document.getElementById('status');
-        status.textContent = `Processed ${result.totalRows} rows. Imported: ${result.importedCount}, Existing: ${result.existingCount}, Failed: ${result.failedCount}`;
+        status.textContent = translations[currentLanguage].statusProcessed(result);
         status.className = 'status success';
 
         renderValidationErrors(result.validationErrors, document.getElementById('validationTable'));
@@ -506,6 +631,11 @@
         });
     }
 
+    document.getElementById('language').addEventListener('change', (event) => {
+        setLanguage(event.target.value);
+    });
+
+    applyTranslations();
     loadOrganizations();
 </script>
 </body>
