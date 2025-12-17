@@ -326,6 +326,30 @@
         });
     }
 
+    function formatDateTime(value) {
+        if (!value) return '';
+
+        const maybeZoned = typeof value === 'object' && 'year' in value
+            ? new Date(
+                value.year,
+                (value.month ?? 1) - 1,
+                value.day ?? 1,
+                value.hour ?? 0,
+                value.minute ?? 0,
+                value.second ?? 0
+            )
+            : new Date(value);
+
+        if (isNaN(maybeZoned)) {
+            return '';
+        }
+
+        const pad = (num) => String(num).padStart(2, '0');
+
+        return `${maybeZoned.getFullYear()}-${pad(maybeZoned.getMonth() + 1)}-${pad(maybeZoned.getDate())}` +
+            ` ${pad(maybeZoned.getHours())}:${pad(maybeZoned.getMinutes())}:${pad(maybeZoned.getSeconds())}`;
+    }
+
     function renderTable(items, table) {
         const tbody = table.querySelector('tbody');
         tbody.innerHTML = '';
@@ -339,7 +363,7 @@
             if (item.rowNumber) {
                 tr.innerHTML = `<td>${item.rowNumber}</td><td>${item.message}</td>`;
             } else {
-                const createdDate = item.createdDate ?? '';
+                const createdDate = formatDateTime(item.createdDate);
                 tr.innerHTML = `<td>${item.email}</td><td>${item.name}</td><td>${item.surname}</td><td>${createdDate}</td>`;
             }
             tbody.appendChild(tr);
