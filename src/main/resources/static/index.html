@@ -380,6 +380,7 @@
 
     searchInput.addEventListener('input', () => {
         const value = searchInput.value;
+        organizationSelect.value = '';
         renderOrganizations(value);
         renderSearchResults(value);
     });
